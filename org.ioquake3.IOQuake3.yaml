@@ -1,23 +1,23 @@
----
 app-id: org.ioquake3.IOQuake3
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '22.08'
 sdk: org.freedesktop.Sdk
-branch: stable
 command: ioquake3
 rename-desktop-file: ioquake3.desktop
 rename-icon: quake3
 finish-args:
-  - --socket=pulseaudio
-  - --socket=x11
-  - --share=network
   - --device=dri
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --persist=.q3a
 
 modules:
   - name: ioquake3
     buildsystem: simple
     build-commands:
-      - BUILD_SERVER=0 COPYDIR=/app make copyfiles
+      - BUILD_SERVER=0 COPYDIR=/app/share/ioquake3 make -j $FLATPAK_BUILDER_N_JOBS copyfiles
       - >-
         install
         -Dm644 misc/quake3.svg
@@ -29,7 +29,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/ioquake/ioq3.git
-        branch: 05180e32dcfb9a4552e1b9652b56127248a9950c
+        commit: 10a45cbdc131a35530d89bd3cfc2a7eed74b54cc
 
   - name: ioquake3-launcher
     buildsystem: simple
@@ -41,3 +41,11 @@ modules:
       # - … explains (via zenity) where the user can put configs and pk3-files.
       - type: file
         path: ioquake3
+
+  - name: ioquake3-metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm 644 org.ioquake3.IOQuake3.metainfo.xml -t /app/share/metainfo
+    sources:
+      - type: file
+        path: org.ioquake3.IOQuake3.metainfo.xml

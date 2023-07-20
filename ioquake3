@@ -6,24 +6,30 @@
 function error-message {
     cat << EOM
 ioquake3 needs the official Quake 3 .pk3-files to function
-properly (specifically pak0.pk3 … pak8.pk3).
+properly (specifically baseq3/pak0.pk3 … baseq3/pak8.pk3 and
+optionally also missionpack/pak0.pk3 … missionpack/pak3.pk3).
 
 One way to obtain these files is to buy Quake 3 Arena on
 Steam, and extract the files from the installation directory.
 
-Once you've obtained the files, copy them to:
+You may also need latest point release pk3 files. These can be
+downloaded from here:
 
-    ~/.var/app/org.ioquake3.IOQuake3/data/baseq3/
+    https://ioquake3.org/extras/patch-data/
+
+Once you've obtained all the required files, copy them to:
+
+    ~/.var/app/org.ioquake3.IOQuake3/.q3a/
 
 … and restart ioquake3
 EOM
 }
 
 # Ensure ioquake3 reaches our pak-files and configs.
-ln -ns "${XDG_DATA_HOME}" "${HOME}/.q3a"
+mkdir -p "${HOME}"/.q3a/{baseq3,missionpack}
 
 for i in $(seq 0 8); do
-    if [ ! -f "${XDG_DATA_HOME}/baseq3/pak${i}.pk3" ]; then
+    if [ ! -f "${HOME}/.q3a/baseq3/pak${i}.pk3" ]; then
         zenity --error      \
                --width=400  \
                --height=200 \
@@ -32,4 +38,4 @@ for i in $(seq 0 8); do
     fi
 done
 
-/app/ioquake3.x86_64
+/app/share/ioquake3/ioquake3.* "$@"
