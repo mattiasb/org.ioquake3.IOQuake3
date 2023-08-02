@@ -6,7 +6,8 @@
 function error-message {
     cat << EOM
 ioquake3 needs the official Quake 3 .pk3-files to function
-properly (specifically pak0.pk3 … pak8.pk3).
+properly (specifically baseq3/pak0.pk3 … baseq3/pak8.pk3 and
+optionally also missionpack/pak0.pk3 … missionpack/pak3.pk3).
 
 One way to obtain these files is to buy Quake 3 Arena on
 Steam, and extract the files from the installation directory.
@@ -22,6 +23,8 @@ EOM
 # Ensure ioquake3 reaches our pak-files and configs.
 ln -ns "${XDG_DATA_HOME}" "${HOME}/.q3a"
 
+mkdir -p "${XDG_DATA_HOME}"/{baseq3,missionpack}
+
 for i in $(seq 0 8); do
     if [ ! -f "${XDG_DATA_HOME}/baseq3/pak${i}.pk3" ]; then
         zenity --error      \
@@ -32,4 +35,4 @@ for i in $(seq 0 8); do
     fi
 done
 
-/app/ioquake3.x86_64
+/app/games/quake3/ioquake3 "${@}"
